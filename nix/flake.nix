@@ -130,6 +130,20 @@
           rm -r wezterm-ssh/tests
         '';
 
+        postInstall = ''
+          install -Dm644 assets/icon/terminal.png $out/share/icons/hicolor/128x128/apps/org.wezfurlong.wezterm.png
+          install -Dm644 assets/wezterm.desktop $out/share/applications/org.wezfurlong.wezterm.desktop
+          install -Dm644 assets/wezterm.appdata.xml $out/share/metainfo/org.wezfurlong.wezterm.appdata.xml
+
+          install -Dm644 assets/shell-integration/wezterm.sh -t $out/etc/profile.d
+          installShellCompletion --cmd wezterm \
+            --bash assets/shell-completion/bash \
+            --fish assets/shell-completion/fish \
+            --zsh assets/shell-completion/zsh
+
+          install -Dm644 assets/wezterm-nautilus.py -t $out/share/nautilus-python/extensions
+        '';
+
         preFixup = lib.optionalString stdenv.isLinux ''
           patchelf \
             --add-needed "${pkgs.libGL}/lib/libEGL.so.1" \
